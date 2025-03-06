@@ -62,6 +62,16 @@ describe('TaskUseCase', () => {
       expect(taskGatewayMock.deleteVideoTask).not.toHaveBeenCalled();
     });
 
+    it('deve enviar erro', async () => {
+      taskGatewayMock.getQueueVideoForProcess.mockRejectedValue(
+        new Error('Erro ao processar'),
+      );
+
+      await taskUseCase.processListVideos();
+
+      expect(taskGatewayMock.deleteVideoTask).not.toHaveBeenCalled();
+    });
+
     it('deve logar erro se processar vídeo falhar', async () => {
       const mockMessage = {
         Body: 'video123.mp4',
