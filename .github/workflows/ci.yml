@@ -73,8 +73,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/video-api:latest
-            ${{ secrets.DOCKER_USERNAME }}/video-api:${{ github.sha }}
+            ${{ secrets.DOCKER_USERNAME }}/video-processor-api:latest
+            ${{ secrets.DOCKER_USERNAME }}/video-processor-api:${{ github.sha }}
 
       - name: Logout from Docker Hub
         run: docker logout
@@ -107,4 +107,4 @@ jobs:
 
   #     - name: Update Kubernetes Deployment
   #       run: |
-  #         kubectl set image deployment/dominio-app dominio-app=${{ secrets.DOCKER_USERNAME }}/video-api:${{ github.sha }} --record
+  #         kubectl set image deployment/dominio-app dominio-app=${{ secrets.DOCKER_USERNAME }}/video-processor-api:${{ github.sha }} --record

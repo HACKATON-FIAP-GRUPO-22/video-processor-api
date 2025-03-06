@@ -1,8 +1,5 @@
 FROM node:18-alpine
 
-# RUN adduser fiap
-
-# USER fiap
 RUN apk add --no-cache ffmpeg
 
 WORKDIR /app

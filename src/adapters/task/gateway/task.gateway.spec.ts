@@ -1,4 +1,5 @@
 import {
+  DeleteMessageCommand,
   ReceiveMessageCommand,
   SendMessageCommand,
   SQSClient,
@@ -85,6 +86,40 @@ describe('TaskGateway', () => {
 
       expect(consoleSpy).toHaveBeenCalledWith(
         `Mensagem enviada: ${messageBody}`,
+      );
+
+      consoleSpy.mockRestore();
+    });
+  });
+
+  describe('deleteVideoTask', () => {
+    it('should delete video message from SQS', async () => {
+      const receiptHandle = 'test-receipt-handle';
+
+      (sqsClientMock.send as jest.Mock).mockResolvedValue({});
+
+      await gateway.deleteVideoTask(receiptHandle);
+
+      expect(DeleteMessageCommand).toHaveBeenCalledWith({
+        QueueUrl: process.env.QUEUE_PROCESSAR,
+        ReceiptHandle: receiptHandle,
+      });
+
+      expect(sqsClientMock.send).toHaveBeenCalledWith(
+        expect.any(DeleteMessageCommand),
+      );
+    });
+
+    it('should log the deleted message', async () => {
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      const receiptHandle = 'test-receipt-handle';
+
+      (sqsClientMock.send as jest.Mock).mockResolvedValue({});
+
+      await gateway.deleteVideoTask(receiptHandle);
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        `Mensagem deletada: ${receiptHandle}`,
       );
 
       consoleSpy.mockRestore();

@@ -12,6 +12,8 @@ import * as AdmZip from 'adm-zip';
 export class VideoUseCase implements IVideoUseCase {
   private tmp = '/tmp';
   private interval = 20;
+  private outputFolder = path.join(this.tmp, 'output_images');
+  private zipFilePath = path.join(this.tmp, 'output_images.zip');
 
   constructor(
     private storage: IStorageUseCase,
@@ -24,32 +26,32 @@ export class VideoUseCase implements IVideoUseCase {
       if (video.idVideo.includes('video_erro')) {
         throw new Error('Video com erro');
       }
+
       const localVideoPath = path.join(this.tmp, video.idVideo);
-      const outputFolder = path.join(this.tmp, 'output_images');
-      const zipFilePath = path.join(this.tmp, 'output_images.zip');
 
       await this.downloadFileToDisk(video.idVideo, localVideoPath);
-      fs.mkdirSync(outputFolder, { recursive: true });
-      const duration = await this.getVideoDuration(localVideoPath);
+      fs.mkdirSync(this.outputFolder, { recursive: true });
 
+      const duration = await this.getVideoDuration(localVideoPath);
       await this.extractFrames(
         video.idVideo,
         localVideoPath,
-        outputFolder,
+        this.outputFolder,
         duration,
       );
-      this.createZip(outputFolder, zipFilePath);
+
+      this.createZip();
 
       const zipKey = `${video.idVideo}_processed`;
       await this.storage.uploadFile(
         zipKey,
-        fs.readFileSync(zipFilePath),
+        fs.readFileSync(this.zipFilePath),
         'application/zip',
       );
 
       await this.task.sendVideo(`{"id": ${video.idVideo}, "status": "pronto"}`);
 
-      this.cleanTmpFolder([video.idVideo, outputFolder, zipFilePath]);
+      this.cleanTmpFolder([video.idVideo, this.outputFolder, this.zipFilePath]);
     } catch (error) {
       console.log(error);
       await this.task.sendVideo(`{"id": "${video.idVideo}", "status": "erro"}`);
@@ -108,13 +110,13 @@ export class VideoUseCase implements IVideoUseCase {
     });
   }
 
-  private createZip(folder: string, zipPath: string) {
+  private createZip() {
     const zip = new AdmZip();
-    fs.readdirSync(folder).forEach((file) => {
-      const filePath = path.join(folder, file);
+    fs.readdirSync(this.outputFolder).forEach((file) => {
+      const filePath = path.join(this.outputFolder, file);
       zip.addLocalFile(filePath);
     });
-    zip.writeZip(zipPath);
+    zip.writeZip(this.zipFilePath);
   }
 
   private cleanTmpFolder(files: string[]) {
