@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - BDD
+      - bdd
 
 jobs:
   test:
@@ -52,7 +52,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: test
+    needs: bdd
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
