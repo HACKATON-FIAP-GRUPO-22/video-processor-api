@@ -49,7 +49,9 @@ export class VideoUseCase implements IVideoUseCase {
         'application/zip',
       );
 
-      await this.task.sendVideo(`{"id": ${video.idVideo}, "status": "pronto"}`);
+      await this.task.sendVideo(
+        `{"id": "${video.idVideo}", "status": "pronto"}`,
+      );
 
       this.cleanTmpFolder([video.idVideo, this.outputFolder, this.zipFilePath]);
     } catch (error) {
