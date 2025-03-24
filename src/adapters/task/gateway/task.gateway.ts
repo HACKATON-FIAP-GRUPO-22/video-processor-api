@@ -42,6 +42,7 @@ export class TaskGateway implements ITaskGateway {
     const command = new SendMessageCommand({
       QueueUrl: process.env.QUEUE_PROCESSADOS,
       MessageBody: messageBody,
+      MessageGroupId: 'grupo1',
     });
 
     await this.client.send(command);
