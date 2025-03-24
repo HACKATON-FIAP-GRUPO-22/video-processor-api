@@ -32,11 +32,16 @@ spec:
             secretKeyRef:
               name: db-credentials
               key: AWS_ACCESS_KEY_ID
+        - name: AWS_REGION
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: AWS_REGION
         - name: AWS_SECRET_ACCESS_KEY
           valueFrom:
             secretKeyRef:
               name: db-credentials
-              key: AWS_SECRET_ACCESS_KEY
+              key: AWS_SECRET_ACCESS_KEY      
         - name: AWS_SESSION_TOKEN
           valueFrom:
             secretKeyRef:
@@ -45,9 +50,9 @@ spec:
         - name: AWS_S3_BUCKET_NAME
           value: repo-videos-fiap
         - name: QUEUE_PROCESSAR
-          value: processar
+          value: processar.fifo
         - name: QUEUE_PROCESSADOS
-          value: processados 
+          value: processados.fifo 
         - name: AWS_SQS_ENDPOINT
           valueFrom:
             secretKeyRef:
