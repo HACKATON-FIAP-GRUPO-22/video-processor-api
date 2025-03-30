@@ -75,3 +75,9 @@ video-processor-api/
 ```
 
 Essa estrutura garante modularidade, escalabilidade e manutenibilidade do código.
+
+## Evidência de Testes BDD
+
+Abaixo está a evidência dos testes BDD executados com sucesso:
+
+![Evidência de Testes BDD](./docs/bdd.png)
